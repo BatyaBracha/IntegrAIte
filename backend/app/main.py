@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.api.endpoints import router as api_router
+from app.routers.ai_router import router as api_router
 
 app = FastAPI(title="IntegrAIte Backend", version="0.1.0")
 

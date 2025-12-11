@@ -1,31 +1,67 @@
 # OS
 .DS_Store
 Thumbs.db
+*.swp
+*~
 
 # Editors
 .vscode/
 .idea/
+*.sublime-*
 
 # Python
+.venv/
+venv/
 backend/.venv/
+backend/venv/
 backend/__pycache__/
 backend/.pytest_cache/
 backend/*.pyc
 backend/*/*.pyc
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/.coverage
+backend/htmlcov/
+backend/*.egg-info/
+backend/dist/
+backend/build/
 
 # Node/React
 frontend/node_modules/
 frontend/dist/
 frontend/build/
 frontend/.npmrc
+frontend/.pnp.*
+frontend/coverage/
 
 # Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
 # Env/config
 .env
 .env.local
 .env.*.local
+.env.production
+
+# Database (if added later)
+*.db
+*.sqlite
+*.sqlite3
+
+# Test/Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Jupyter (if used)
+.ipynb_checkpoints/
+
+# Cache
+.cache/
+.mypy_cache/
+.ruff_cache/

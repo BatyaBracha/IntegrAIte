@@ -13,6 +13,10 @@ uvicorn app.main:app --reload
 
 Then open http://localhost:8000/docs for interactive API docs.
 
+## Configuration
+- Place environment variables in a `.env` file at the project root (loaded automatically).
+- `GEMINI_API_KEY` (optional) — required once you wire Gemini in `services/ai_service.py`.
+
 ## Tests
 
 ```bash

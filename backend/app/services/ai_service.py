@@ -1,10 +1,49 @@
-"""Placeholder AI service that can be wired to Gemini later."""
+"""AI service powered by Google Gemini SDK with session-based chat memory."""
 
-from typing import Optional
+import google.generativeai as genai
+from typing import Optional, Dict
+
+from app.core.config import get_settings
+
+settings = get_settings()
+
+# Configure Gemini
+if settings.gemini_api_key:
+    genai.configure(api_key=settings.gemini_api_key)
+
+# In-memory chat sessions
+chat_sessions: Dict[str, any] = {}
+
+
+def get_or_create_chat(session_id: str):
+    """Get existing chat or create new one."""
+    if session_id not in chat_sessions:
+        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        chat_sessions[session_id] = model.start_chat(history=[])
+    return chat_sessions[session_id]
 
 
 def generate_ai_reply(prompt: str) -> Optional[str]:
-    """Return a simple canned reply for now; swap with Gemini integration later."""
-    if not prompt:
+    """Generate AI reply (stateless)."""
+    if not prompt or not settings.gemini_api_key:
         return None
-    return "This is a placeholder AI response. Connect Gemini here."
+    
+    try:
+        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+
+def generate_ai_reply_with_context(session_id: str, prompt: str) -> Optional[str]:
+    """Generate AI reply with conversation history."""
+    if not prompt or not settings.gemini_api_key:
+        return None
+    
+    try:
+        chat = get_or_create_chat(session_id)
+        response = chat.send_message(prompt)
+        return response.text
+    except Exception as e:
+        return f"Error: {str(e)}"
