@@ -1,9 +1,13 @@
 """AI service powered by Google Gemini SDK with session-based chat memory."""
 
+import ssl
 import google.generativeai as genai
 from typing import Optional, Dict
 
 from app.core.config import get_settings
+
+# Temporary SSL fix for development
+ssl._create_default_https_context = ssl._create_unverified_context
 
 settings = get_settings()
 
