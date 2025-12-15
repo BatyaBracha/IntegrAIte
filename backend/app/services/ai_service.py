@@ -7,6 +7,11 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
+
+def _model_name() -> str:
+    return getattr(settings, "gemini_model", "gemini-2.0-flash")
+
+
 # Configure Gemini
 if settings.gemini_api_key:
     genai.configure(api_key=settings.gemini_api_key)
@@ -18,7 +23,7 @@ chat_sessions: Dict[str, any] = {}
 def get_or_create_chat(session_id: str):
     """Get existing chat or create new one."""
     if session_id not in chat_sessions:
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        model = genai.GenerativeModel(_model_name())
         chat_sessions[session_id] = model.start_chat(history=[])
     return chat_sessions[session_id]
 
@@ -29,7 +34,7 @@ def generate_ai_reply(prompt: str) -> Optional[str]:
         return None
     
     try:
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        model = genai.GenerativeModel(_model_name())
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:

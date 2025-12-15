@@ -1,6 +1,10 @@
 # Build stage
 FROM node:20-alpine AS build
 WORKDIR /app
+
+ARG REACT_APP_API_BASE="http://localhost:8000/api/v1"
+ENV REACT_APP_API_BASE=${REACT_APP_API_BASE}
+
 COPY package*.json ./
 RUN npm install
 COPY . .
