@@ -4,9 +4,9 @@ import os
 import ssl
 
 # Configure NetFree SSL certificates BEFORE importing any Google libraries
-os.environ["REQUESTS_CA_BUNDLE"] = r"C:\ProgramData\NetFree\CA\netfree-ca-bundle-curl.crt"
-os.environ["SSL_CERT_FILE"] = r"C:\ProgramData\NetFree\CA\netfree-ca-bundle-curl.crt"
-os.environ["GRPC_DEFAULT_SSL_ROOTS_FILE_PATH"] = r"C:\ProgramData\NetFree\CA\netfree-ca-bundle-curl.crt"
+os.environ["REQUESTS_CA_BUNDLE"] = r"C:\Users\50043\Downloads\netfree-ca.crt"
+os.environ["SSL_CERT_FILE"] = r"C:\Users\50043\Downloads\netfree-ca.crt"
+os.environ["GRPC_DEFAULT_SSL_ROOTS_FILE_PATH"] = r"C:\Users\50043\Downloads\netfree-ca.crt"
 
 import google.generativeai as genai
 from typing import Optional, Dict
@@ -19,10 +19,9 @@ settings = get_settings()
 def _model_name() -> str:
     return getattr(settings, "gemini_model", "gemini-2.0-flash")
 
-
 # Configure Gemini
 if settings.gemini_api_key:
-    genai.configure(api_key=settings.gemini_api_key)
+    genai.configure(api_key=settings.gemini_api_key, transport='rest')
 
 # In-memory chat sessions
 chat_sessions: Dict[str, any] = {}
