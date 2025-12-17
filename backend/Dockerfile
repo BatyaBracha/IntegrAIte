@@ -5,6 +5,11 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+COPY netfree-ca-bundle-curl.crt /usr/local/share/ca-certificates/netfree-ca-bundle-curl.crt
+RUN update-ca-certificates && \
+    mkdir -p /ProgramData/NetFree/CA && \
+    ln -sf /usr/local/share/ca-certificates/netfree-ca-bundle-curl.crt /ProgramData/NetFree/CA/netfree-ca-bundle-curl.crt
+
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
