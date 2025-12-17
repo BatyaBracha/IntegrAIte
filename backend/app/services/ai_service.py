@@ -1,13 +1,17 @@
 """AI service powered by Google Gemini SDK with session-based chat memory."""
 
+import os
 import ssl
+
+# Configure NetFree SSL certificates BEFORE importing any Google libraries
+os.environ["REQUESTS_CA_BUNDLE"] = r"C:\ProgramData\NetFree\CA\netfree-ca-bundle-curl.crt"
+os.environ["SSL_CERT_FILE"] = r"C:\ProgramData\NetFree\CA\netfree-ca-bundle-curl.crt"
+os.environ["GRPC_DEFAULT_SSL_ROOTS_FILE_PATH"] = r"C:\ProgramData\NetFree\CA\netfree-ca-bundle-curl.crt"
+
 import google.generativeai as genai
 from typing import Optional, Dict
 
 from app.core.config import get_settings
-
-# Temporary SSL fix for development
-ssl._create_default_https_context = ssl._create_unverified_context
 
 settings = get_settings()
 
