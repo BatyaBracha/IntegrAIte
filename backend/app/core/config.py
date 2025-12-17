@@ -6,6 +6,10 @@ from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DEFAULT_GEMINI_MODELS: List[str] = [
+    "gemini-1.5-pro",
+    "gemini-1.5-pro-latest",
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-latest",
     "gemini-2.5-flash",
     "gemini-2.5-pro",
     "gemini-2.5-flash-preview-09-2025",
@@ -36,6 +40,7 @@ DEFAULT_GEMINI_MODELS: List[str] = [
 class Settings(BaseSettings):
     gemini_api_key: Optional[str] = Field(default=None, alias="GEMINI_API_KEY")
     gemini_model: str = Field(default="gemini-2.0-flash", alias="GEMINI_MODEL")
+    gemini_models: Optional[List[str]] = Field(default=None, alias="GEMINI_MODELS")
     frontend_origins: str = Field(default="http://localhost:3000", alias="FRONTEND_ORIGINS")
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
@@ -49,6 +54,26 @@ class Settings(BaseSettings):
             )
         return value
 
+    @field_validator("gemini_models", mode="before")
+    @classmethod
+    def _split_models(cls, value):
+        if isinstance(value, str):
+            return [item.strip() for item in value.split(",") if item.strip()]
+        return value
+
+    @field_validator("gemini_models")
+    @classmethod
+    def _validate_models(cls, value: Optional[List[str]]):
+        if not value:
+            return value
+        unknown = [model for model in value if model not in DEFAULT_GEMINI_MODELS]
+        if unknown:
+            raise ValueError(
+                "Unknown GEMINI_MODELS entries: "
+                f"{', '.join(unknown)}. Choose values from: {', '.join(DEFAULT_GEMINI_MODELS)}"
+            )
+        return value
+
     @property
     def allowed_origins(self) -> list[str]:
         """Normalized list of origins allowed by CORS."""
@@ -57,6 +82,15 @@ class Settings(BaseSettings):
     @property
     def available_models(self) -> List[str]:
         return DEFAULT_GEMINI_MODELS
+
+    @property
+    def preferred_models(self) -> List[str]:
+        models = self.gemini_models or [self.gemini_model]
+        ordered: List[str] = []
+        for model in models:
+            if model and model not in ordered:
+                ordered.append(model)
+        return ordered
 
 
 @lru_cache(maxsize=1)
