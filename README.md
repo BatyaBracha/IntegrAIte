@@ -52,7 +52,7 @@ docker compose up --build
 ```
 
 - Backend: http://localhost:8000 (FastAPI docs under `/docs`).
-- Frontend: http://localhost:3000 (static build served by Nginx, configured to call `http://backend:8000/api/v1`).
+- Frontend: http://localhost:3000 (static build served by Nginx, configured` to call `http://backend:8000/api/v1`).
 
 ## Tests
 

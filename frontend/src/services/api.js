@@ -20,7 +20,7 @@ async function request(path, options = {}) {
       ...(options.headers || {}),
     },
   };
-
+  alert(`${API_BASE}${path}`, "API_BASE", API_BASE, "path", path);
   const response = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: defaults.headers,
