@@ -27,17 +27,17 @@ def get_or_create_history(session_id: str) -> List[ChatEntry]:
     """Return mutable conversation history for a session."""
     return chat_sessions.setdefault(session_id, [])
 
-
-def generate_ai_reply(prompt: str) -> Optional[str]:
-    """Generate AI reply (stateless)."""
-    if not prompt or not settings.gemini_api_key:
-        return None
+#not used in the current version.
+# def generate_ai_reply(prompt: str) -> Optional[str]:
+#     """Generate AI reply (stateless)."""
+#     if not prompt or not settings.gemini_api_key:
+#         return None
     
-    try:
-        response, _ = generate_with_fallback(prompt)
-        return response.text
-    except Exception as e:
-        return f"Error: {str(e)}"
+#     try:
+#         response, _ = generate_with_fallback(prompt)
+#         return response.text
+#     except Exception as e:
+#         return f"Error: {str(e)}"
 
 
 def generate_ai_reply_with_context(session_id: str, prompt: str) -> Optional[str]:
