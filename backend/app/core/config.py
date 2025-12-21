@@ -39,7 +39,7 @@ DEFAULT_GEMINI_MODELS: List[str] = [
 
 class Settings(BaseSettings):
     gemini_api_key: Optional[str] = Field(default=None, alias="GEMINI_API_KEY")
-    gemini_model: str = Field(default="gemini-2.0-flash", alias="GEMINI_MODEL")
+    gemini_model: str = Field(default="gemini-flash-latest", alias="GEMINI_MODEL")
     gemini_models: Optional[List[str]] = Field(default=None, alias="GEMINI_MODELS")
     frontend_origins: str = Field(default="http://localhost:3000", alias="FRONTEND_ORIGINS")
 

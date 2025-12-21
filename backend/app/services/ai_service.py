@@ -1,7 +1,14 @@
 """AI service powered by Google Gemini SDK with session-based chat memory."""
 
 from __future__ import annotations
-
+# Ensure TLS uses a proper CA bundle on Windows (avoid CERTIFICATE_VERIFY_FAILED)
+# import os
+# try:
+#     import certifi
+#     os.environ.setdefault("SSL_CERT_FILE", certifi.where())
+#     os.environ.setdefault("REQUESTS_CA_BUNDLE", certifi.where())
+except Exception:
+    pass
 from typing import Any, Dict, List, Optional
 
 from app.core.config import get_settings

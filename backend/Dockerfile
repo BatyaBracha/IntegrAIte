@@ -1,7 +1,7 @@
 FROM python:3.11-slim
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc \
+    && apt-get install -y --no-install-recommends ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 COPY netfree-ca-bundle-curl.crt /usr/local/share/ca-certificates/netfree-ca-bundle-curl.crt
@@ -14,14 +14,14 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt
+# Removed SSL_CERT_FILE / REQUESTS_CA_BUNDLE lines per your request
 
-# Copy all application code
-COPY . .
+# Install Python dependencies (context is backend/)
+COPY requirements.txt /app/requirements.txt
+RUN python -m pip install --upgrade pip \
+    && python -m pip install --no-cache-dir -r /app/requirements.txt
 
-# Expose port
+COPY . /app
 EXPOSE 8000
-
-# Run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# ...existing code...
