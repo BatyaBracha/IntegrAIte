@@ -11,9 +11,9 @@ from google.api_core import exceptions as google_exceptions
 from app.core.config import get_settings
 from app.services.exceptions import MissingConfigurationError
 
-_DEFAULT_CA_PATH = "/etc/ssl/certs/ca-certificates.crt"
-for var in ("REQUESTS_CA_BUNDLE", "SSL_CERT_FILE", "GRPC_DEFAULT_SSL_ROOTS_FILE_PATH"):
-    os.environ.setdefault(var, _DEFAULT_CA_PATH)
+# _DEFAULT_CA_PATH = "/etc/ssl/certs/ca-certificates.crt"
+# for var in ("REQUESTS_CA_BUNDLE", "SSL_CERT_FILE", "GRPC_DEFAULT_SSL_ROOTS_FILE_PATH"):
+#     os.environ.setdefault(var, _DEFAULT_CA_PATH)
 
 settings = get_settings()
 _client: Optional[genai.Client] = None

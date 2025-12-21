@@ -12,10 +12,14 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "cross-env CI=true react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -23,6 +27,16 @@
       "react-app",
       "react-app/jest"
     ]
+  },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 45,
+        "functions": 55,
+        "lines": 60,
+        "statements": 60
+      }
+    }
   },
   "browserslist": {
     "production": [
