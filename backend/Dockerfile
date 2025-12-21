@@ -12,14 +12,17 @@ RUN update-ca-certificates && \
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
-
-# Removed SSL_CERT_FILE / REQUESTS_CA_BUNDLE lines per your request
+    PYTHONUNBUFFERED=1 \
+    REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/netfree-ca-bundle-curl.crt \
+    SSL_CERT_FILE=/usr/local/share/ca-certificates/netfree-ca-bundle-curl.crt \
+    CURL_CA_BUNDLE=/usr/local/share/ca-certificates/netfree-ca-bundle-curl.crt \
+    GRPC_DEFAULT_SSL_ROOTS_FILE_PATH=/usr/local/share/ca-certificates/netfree-ca-bundle-curl.crt \
+    PIP_CERT=/usr/local/share/ca-certificates/netfree-ca-bundle-curl.crt
 
 # Install Python dependencies (context is backend/)
 COPY requirements.txt /app/requirements.txt
-RUN python -m pip install --upgrade pip \
-    && python -m pip install --no-cache-dir -r /app/requirements.txt
+RUN python -m pip install --upgrade pip --trusted-host pypi.org --trusted-host files.pythonhosted.org \
+    && python -m pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r /app/requirements.txt
 
 COPY . /app
 EXPOSE 8000
