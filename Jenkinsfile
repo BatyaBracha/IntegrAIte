@@ -11,9 +11,9 @@ pipeline {
         NODE_VERSION = "20"
     }
 
-    options {
-        // Removed timestamps() and ansiColor('xterm') from here
-    }
+    // options {
+    //     // Removed timestamps() and ansiColor('xterm') from here
+    // }
 
     stages {
         stage('Checkout') {
