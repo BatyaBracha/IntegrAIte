@@ -196,25 +196,34 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            // שלב זה ירוץ רק אם תגדירי משתנה DEPLOY_ENABLED כ-true
-            // when { expression { env.DEPLOY_ENABLED == 'true' } }
+       stage('Deploy') {
             steps {
-                script{
-                    echo "Deploying newly built images..."
-            // 1. עוצרים קונטיינרים ישנים אם הם קיימים (כדי למנוע התנגשות פורטים)
-            sh "docker stop integraite-backend integraite-frontend || true"
-            sh "docker rm integraite-backend integraite-frontend || true"
-            
-            // 2. מריצים את האימג'ים הטריים שבנינו הרגע
-            sh "docker run -d --name integraite-backend -p 8000:8000 ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA}"
-            sh "docker run -d --name integraite-frontend -p 3000:80 ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA}"
-            
-            echo "Application is live at http://localhost:3000"
+                script {
+                    echo "Deploying Services with Secure API Key..."
+                    
+                    // משיכת המפתח מהכספת של ג'נקינס לתוך משתנה זמני בשם AI_KEY
+                    withCredentials([string(credentialsId: 'GEMINI_API_KEY', variable: 'AI_KEY')]) {
+                        
+                        // ניקוי קונטיינרים ישנים
+                        sh "docker rm -f integraite-backend integraite-frontend || true"
+                        
+                        // הרצת ה-Backend עם המפתח המוזרק
+                        sh """
+                        docker run -d --name integraite-backend \
+                        -p 8000:8000 \
+                        -e GEMINI_API_KEY=${AI_KEY} \
+                        ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA}
+                        """
+                        
+                        // הרצת ה-Frontend (הוא לא צריך את המפתח, הוא מדבר עם ה-Backend)
+                        sh """
+                        docker run -d --name integraite-frontend \
+                        -p 3000:80 \
+                        ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA}
+                        """
+                    }
+                    echo "Deployment Successful! App is live at http://localhost:3000"
                 }
-                // ודאי שהסקריפט קיים בנתיב הזה ב-Git
-                // sh 'chmod +x ./scripts/deploy.sh'
-                // sh './scripts/deploy.sh'
             }
         }
     }
