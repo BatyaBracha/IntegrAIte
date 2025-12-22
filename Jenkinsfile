@@ -12,7 +12,8 @@ pipeline {
     }
 
     // options {
-    //     // Removed timestamps() and ansiColor('xterm') from here
+    //     timestamps()
+    //     ansiColor('xterm')
     // }
 
     stages {
@@ -25,12 +26,12 @@ pipeline {
         stage('Set Up Runtimes') {
             steps {
                 script {
-                    timestamps {
-                        ansiColor('xterm') {
+                    // timestamps {
+                    //     ansiColor('xterm') {
                             sh "${PYTHON} --version"
                             sh "node --version || nvm use ${NODE_VERSION}"
-                        }
-                    }
+                    //     }
+                    // }
                 }
             }
         }
@@ -38,14 +39,14 @@ pipeline {
         stage('Install Backend Dependencies') {
             steps {
                 script {
-                    timestamps {
-                        ansiColor('xterm') {
+                    // timestamps {
+                    //     ansiColor('xterm') {
                             dir(BACKEND_DIR) {
                                 sh "${PYTHON} -m pip install --upgrade pip"
                                 sh "${PYTHON} -m pip install -r requirements.txt"
                             }
-                        }
-                    }
+                    //     }
+                    // }
                 }
             }
         }
@@ -53,13 +54,13 @@ pipeline {
         stage('Install Frontend Dependencies') {
             steps {
                 script {
-                    timestamps {
-                        ansiColor('xterm') {
+                    // timestamps {
+                    //     ansiColor('xterm') {
                             dir(FRONTEND_DIR) {
                                 sh 'npm ci'
                             }
-                        }
-                    }
+                    //     }
+                    // }
                 }
             }
         }
@@ -86,12 +87,12 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    timestamps {
-                        ansiColor('xterm') {
+                    // timestamps {
+                    //     ansiColor('xterm') {
                             sh "docker build -t ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA} ${BACKEND_DIR}"
                             sh "docker build -t ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA} ${FRONTEND_DIR}"
-                        }
-                    }
+                    //     }
+                    // }
                 }
             }
         }
@@ -100,15 +101,15 @@ pipeline {
             when { expression { env.DOCKERHUB_CREDENTIALS } }
             steps {
                 script {
-                    timestamps {
-                        ansiColor('xterm') {
+                    // timestamps {
+                    //     ansiColor('xterm') {
                             withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                                 sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin ${DOCKER_REGISTRY ?: ""}'
                                 sh "docker push ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA}"
                                 sh "docker push ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA}"
                             }
-                        }
-                    }
+                    //     }
+                    // }
                 }
             }
         }
@@ -117,11 +118,11 @@ pipeline {
             when { expression { env.DEPLOY_ENABLED == 'true' } }
             steps {
                 script {
-                    timestamps {
-                        ansiColor('xterm') {
+                    // timestamps {
+                    //     ansiColor('xterm') {
                             sh './scripts/deploy.sh'
-                        }
-                    }
+                    //     }
+                    // }
                 }
             }
         }
@@ -129,7 +130,7 @@ pipeline {
 
     post {
         always {
-            cleanWs()
+            // cleanWs()
         }
     }
 }
