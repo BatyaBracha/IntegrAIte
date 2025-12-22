@@ -141,7 +141,9 @@ pipeline {
         BACKEND_DIR   = "backend"
         FRONTEND_DIR  = "frontend"
         // הגדירי כאן את שם המשתמש שלך ב-Docker Hub
-        DOCKER_REGISTRY_USER = "your_dockerhub_username" 
+        DOCKER_REGISTRY_USER = "batshevamalkarechnitzer
+
+" 
         DOCKER_IMAGE_BACKEND  = "${DOCKER_REGISTRY_USER}/integraite-backend"
         DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY_USER}/integraite-frontend"
         COMMIT_SHA = "${env.GIT_COMMIT ?: 'dev'}"
@@ -166,27 +168,29 @@ pipeline {
             }
         }
 
-        stage('Frontend Dependencies & Tests') {
-            steps {
-                script {
-                    // הרצת קונטיינר Node זמני לביצוע התקנה ובדיקות
-                    sh """
-                    docker run --rm -v ${WORKSPACE}/${FRONTEND_DIR}:/app -w /app node:20-slim \
-                    sh -c 'npm ci && CI=true npm test -- --watch=false'
-                    """
-                }
-            }
+        stage('Backend Dependencies & Tests') {
+    steps {
+        script {
+            sh """
+            docker run --rm -v ${WORKSPACE}:/app -w /app/backend python:3.9-slim \
+            sh -c 'pip install --upgrade pip --trusted-host pypi.org --trusted-host files.pythonhosted.org && \
+                   pip install -r requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org && \
+                   pytest'
+            """
         }
+    }
+}
 
-        stage('Build Docker Images') {
-            steps {
-                script {
-                    // בניית האימג'ים הסופיים של הפרויקט
-                    sh "docker build -t ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA} ${BACKEND_DIR}"
-                    sh "docker build -t ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA} ${FRONTEND_DIR}"
-                }
-            }
+stage('Frontend Dependencies & Tests') {
+    steps {
+        script {
+            sh """
+            docker run --rm -v ${WORKSPACE}:/app -w /app/frontend node:20-slim \
+            sh -c 'npm config set strict-ssl false && npm ci && CI=true npm test -- --watch=false'
+            """
         }
+    }
+}
 
         stage('Push Docker Images') {
             when { expression { env.DOCKERHUB_CREDENTIALS } }
