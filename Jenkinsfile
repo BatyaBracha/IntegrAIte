@@ -154,19 +154,15 @@ pipeline {
             }
         }
 
-       stage('Backend Dependencies & Tests') {
+stage('Backend Dependencies & Tests') {
     steps {
         script {
             sh """
-            docker run --rm -v ${WORKSPACE}:/app -w /app/backend python:3.9-slim \
-            sh -c 'pip install --upgrade pip --trusted-host pypi.org --trusted-host files.pythonhosted.org && \
-                   pip install -r requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org && \
-                   pytest'
+            docker run --rm -v ${WORKSPACE}:/app -w /app python:3.9-slim \
+            sh -c 'ls -R && pip install -r backend/requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org && pytest backend/'
             """
         }
-    }
-}
-
+        
 stage('Frontend Dependencies & Tests') {
     steps {
         script {
