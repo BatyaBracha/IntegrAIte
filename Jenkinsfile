@@ -47,24 +47,24 @@ pipeline {
             }
         }
 
-        // stage('Run Tests') {
-        //     parallel {
-        //         stage('Backend Tests') {
-        //             steps {
-        //                 dir(BACKEND_DIR) {
-        //                     sh 'pytest'
-        //                 }
-        //             }
-        //         }
-        //         stage('Frontend Tests') {
-        //             steps {
-        //                 dir(FRONTEND_DIR) {
-        //                     sh 'CI=true npm test -- --watch=false'
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Run Tests') {
+            parallel {
+                stage('Backend Tests') {
+                    steps {
+                        dir(BACKEND_DIR) {
+                            sh 'pytest'
+                        }
+                    }
+                }
+                stage('Frontend Tests') {
+                    steps {
+                        dir(FRONTEND_DIR) {
+                            sh 'CI=true npm test -- --watch=false'
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Build Docker Images') {
             steps {
