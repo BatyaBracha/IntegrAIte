@@ -162,7 +162,9 @@ stage('Backend Dependencies & Tests') {
             sh -c 'ls -R && pip install -r backend/requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org && pytest backend/'
             """
         }
-        
+    }
+}
+
 stage('Frontend Dependencies & Tests') {
     steps {
         script {
