@@ -198,7 +198,7 @@ pipeline {
 
         stage('Deploy') {
             // שלב זה ירוץ רק אם תגדירי משתנה DEPLOY_ENABLED כ-true
-            when { expression { env.DEPLOY_ENABLED == 'true' } }
+            // when { expression { env.DEPLOY_ENABLED == 'true' } }
             steps {
                 // ודאי שהסקריפט קיים בנתיב הזה ב-Git
                 sh 'chmod +x ./scripts/deploy.sh'
