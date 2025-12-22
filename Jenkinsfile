@@ -141,9 +141,7 @@ pipeline {
         BACKEND_DIR   = "backend"
         FRONTEND_DIR  = "frontend"
         // הגדירי כאן את שם המשתמש שלך ב-Docker Hub
-        DOCKER_REGISTRY_USER = "batshevamalkarechnitzer
-
-" 
+        DOCKER_REGISTRY_USER = "batshevamalkarechnitzer"
         DOCKER_IMAGE_BACKEND  = "${DOCKER_REGISTRY_USER}/integraite-backend"
         DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY_USER}/integraite-frontend"
         COMMIT_SHA = "${env.GIT_COMMIT ?: 'dev'}"
