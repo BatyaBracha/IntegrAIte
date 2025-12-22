@@ -144,6 +144,8 @@ pipeline {
         DOCKER_IMAGE_BACKEND  = "${DOCKER_REGISTRY_USER}/integraite-backend"
         DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY_USER}/integraite-frontend"
         COMMIT_SHA = "${env.GIT_COMMIT ?: 'dev'}"
+        // כאן הגדירי את ה-ID של ה-Credentials שיצרת בג'נקינס עבור Docker Hub
+        DOCKERHUB_CREDENTIALS = "docker-hub-creds" 
     }
 
     stages {
@@ -153,43 +155,36 @@ pipeline {
             }
         }
 
-        stage('Backend Dependencies & Tests') {
+        stage('Backend Build & Test') {
             steps {
                 script {
-                    // 1. בניית ה-Image של ה-Backend (כולל העתקת הקבצים והתקנת Dependencies)
-                    // זה פותר את בעיית ה-requirements.txt שלא נמצא
-                    sh "docker build -t backend-test ./${BACKEND_DIR}"
+                    // בניית האימג' (הקוד כבר בפנים, אין צורך במיפוי תיקיות שנכשל)
+                    sh "docker build -t ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA} ./${BACKEND_DIR}"
                     
-                    // 2. הרצת הבדיקות בתוך ה-Image שבנינו
-                    sh "docker run --rm backend-test pytest"
+                    // הרצת הבדיקות בתוך האימג' שנבנה
+                    sh "docker run --rm ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA} pytest"
                 }
             }
         }
 
-        stage('Frontend Dependencies & Tests') {
+        stage('Frontend Build & Test') {
             steps {
                 script {
-                    // 1. בניית ה-Image של ה-Frontend
-                    sh "docker build -t frontend-test ./${FRONTEND_DIR}"
+                    // 1. בניית אימג' זמני לעצירה בשלב ה-Node (חייב AS build ב-Dockerfile)
+                    sh "docker build --target build -t frontend-test-env ./${FRONTEND_DIR}"
                     
-                    // 2. הרצת הבדיקות בתוך ה-Image
-                    sh "docker run --rm frontend-test npm test -- --watch=false"
-                }
-            }
-        }
-
-        stage('Build Docker Images (Final)') {
-            steps {
-                script {
-                    // תיוג האימג'ים שכבר בנינו לשמות הסופיים ל-Docker Hub
-                    sh "docker tag backend-test ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA}"
-                    sh "docker tag frontend-test ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA}"
+                    // 2. הרצת בדיקות (CI=true מונע מהטסטים להיתקע)
+                    sh "docker run --rm -e CI=true frontend-test-env npm test -- --watchAll=false"
+                    
+                    // 3. אם עבר - בניית האימג' הסופי והרזה (Nginx) ישר עם השם המלא
+                    sh "docker build -t ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA} ./${FRONTEND_DIR}"
                 }
             }
         }
 
         stage('Push Docker Images') {
-            when { expression { env.DOCKERHUB_CREDENTIALS } }
+            // השלב הזה ירוץ רק אם הגדרת Credentials בג'נקינס
+            when { expression { env.DOCKERHUB_CREDENTIALS != '' } }
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
@@ -202,8 +197,11 @@ pipeline {
         }
 
         stage('Deploy') {
+            // שלב זה ירוץ רק אם תגדירי משתנה DEPLOY_ENABLED כ-true
             when { expression { env.DEPLOY_ENABLED == 'true' } }
             steps {
+                // ודאי שהסקריפט קיים בנתיב הזה ב-Git
+                sh 'chmod +x ./scripts/deploy.sh'
                 sh './scripts/deploy.sh'
             }
         }
