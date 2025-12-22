@@ -140,7 +140,6 @@ pipeline {
     environment {
         BACKEND_DIR   = "backend"
         FRONTEND_DIR  = "frontend"
-        // הגדירי כאן את שם המשתמש שלך ב-Docker Hub
         DOCKER_REGISTRY_USER = "batshevamalkarechnitzer" 
         DOCKER_IMAGE_BACKEND  = "${DOCKER_REGISTRY_USER}/integraite-backend"
         DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY_USER}/integraite-frontend"
@@ -154,34 +153,37 @@ pipeline {
             }
         }
 
-stage('Backend Dependencies & Tests') {
-    steps {
-        script {
-            sh """
-            docker run --rm -v ${WORKSPACE}:/app -w /app python:3.9-slim \
-            sh -c 'ls -R && pip install -r backend/requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org && pytest backend/'
-            """
-        }
-    }
-}
-
-stage('Frontend Dependencies & Tests') {
-    steps {
-        script {
-            sh """
-            docker run --rm -v ${WORKSPACE}:/app -w /app/frontend node:20-slim \
-            sh -c 'npm config set strict-ssl false && npm ci && CI=true npm test -- --watch=false'
-            """
-        }
-    }
-}
-
-        stage('Build Docker Images') {
+        stage('Backend Dependencies & Tests') {
             steps {
                 script {
-                    // בניית האימג'ים הסופיים של הפרויקט
-                    sh "docker build -t ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA} ${BACKEND_DIR}"
-                    sh "docker build -t ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA} ${FRONTEND_DIR}"
+                    // 1. בניית ה-Image של ה-Backend (כולל העתקת הקבצים והתקנת Dependencies)
+                    // זה פותר את בעיית ה-requirements.txt שלא נמצא
+                    sh "docker build -t backend-test ./${BACKEND_DIR}"
+                    
+                    // 2. הרצת הבדיקות בתוך ה-Image שבנינו
+                    sh "docker run --rm backend-test pytest"
+                }
+            }
+        }
+
+        stage('Frontend Dependencies & Tests') {
+            steps {
+                script {
+                    // 1. בניית ה-Image של ה-Frontend
+                    sh "docker build -t frontend-test ./${FRONTEND_DIR}"
+                    
+                    // 2. הרצת הבדיקות בתוך ה-Image
+                    sh "docker run --rm frontend-test npm test -- --watch=false"
+                }
+            }
+        }
+
+        stage('Build Docker Images (Final)') {
+            steps {
+                script {
+                    // תיוג האימג'ים שכבר בנינו לשמות הסופיים ל-Docker Hub
+                    sh "docker tag backend-test ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA}"
+                    sh "docker tag frontend-test ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA}"
                 }
             }
         }
