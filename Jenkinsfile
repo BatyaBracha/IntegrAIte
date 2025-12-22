@@ -141,7 +141,7 @@ pipeline {
         BACKEND_DIR   = "backend"
         FRONTEND_DIR  = "frontend"
         // הגדירי כאן את שם המשתמש שלך ב-Docker Hub
-        DOCKER_REGISTRY_USER = "batshevamalkarechnitzer"
+        DOCKER_REGISTRY_USER = "batshevamalkarechnitzer" 
         DOCKER_IMAGE_BACKEND  = "${DOCKER_REGISTRY_USER}/integraite-backend"
         DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY_USER}/integraite-frontend"
         COMMIT_SHA = "${env.GIT_COMMIT ?: 'dev'}"
@@ -154,19 +154,7 @@ pipeline {
             }
         }
 
-        stage('Backend Dependencies & Tests') {
-            steps {
-                script {
-                    // הרצת קונטיינר פייתון זמני לביצוע התקנה ובדיקות
-                    sh """
-                    docker run --rm -v ${WORKSPACE}/${BACKEND_DIR}:/app -w /app python:3.9-slim \
-                    sh -c 'pip install --upgrade pip && pip install -r requirements.txt && pytest'
-                    """
-                }
-            }
-        }
-
-        stage('Backend Dependencies & Tests') {
+       stage('Backend Dependencies & Tests') {
     steps {
         script {
             sh """
@@ -189,6 +177,16 @@ stage('Frontend Dependencies & Tests') {
         }
     }
 }
+
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    // בניית האימג'ים הסופיים של הפרויקט
+                    sh "docker build -t ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA} ${BACKEND_DIR}"
+                    sh "docker build -t ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA} ${FRONTEND_DIR}"
+                }
+            }
+        }
 
         stage('Push Docker Images') {
             when { expression { env.DOCKERHUB_CREDENTIALS } }
