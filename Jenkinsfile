@@ -140,8 +140,10 @@ pipeline {
     environment {
         BACKEND_DIR   = "backend"
         FRONTEND_DIR  = "frontend"
-        DOCKER_IMAGE_BACKEND  = "your_user/integraite-backend"
-        DOCKER_IMAGE_FRONTEND = "your_user/integraite-frontend"
+        // הגדירי כאן את שם המשתמש שלך ב-Docker Hub
+        DOCKER_REGISTRY_USER = "your_dockerhub_username" 
+        DOCKER_IMAGE_BACKEND  = "${DOCKER_REGISTRY_USER}/integraite-backend"
+        DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY_USER}/integraite-frontend"
         COMMIT_SHA = "${env.GIT_COMMIT ?: 'dev'}"
     }
 
@@ -152,35 +154,57 @@ pipeline {
             }
         }
 
-        // במקום להתקין פייתון ו-נוד על הג'נקינס, נשתמש ב-Docker כדי להריץ את הבדיקות
-        stage('Backend Tests') {
-            steps {
-                // מריץ קונטיינר זמני של פיתון רק בשביל הבדיקות
-                sh "docker run --rm -v ${WORKSPACE}/${BACKEND_DIR}:/app -w /app python:3.9-slim sh -c 'pip install -r requirements.txt && pytest'"
-            }
-        }
-
-        stage('Frontend Tests') {
-            steps {
-                // מריץ קונטיינר זמני של Node רק בשביל הבדיקות
-                sh "docker run --rm -v ${WORKSPACE}/${FRONTEND_DIR}:/app -w /app node:20-slim sh -c 'npm ci && CI=true npm test -- --watch=false'"
-            }
-        }
-
-        stage('Build & Push') {
+        stage('Backend Dependencies & Tests') {
             steps {
                 script {
+                    // הרצת קונטיינר פייתון זמני לביצוע התקנה ובדיקות
+                    sh """
+                    docker run --rm -v ${WORKSPACE}/${BACKEND_DIR}:/app -w /app python:3.9-slim \
+                    sh -c 'pip install --upgrade pip && pip install -r requirements.txt && pytest'
+                    """
+                }
+            }
+        }
+
+        stage('Frontend Dependencies & Tests') {
+            steps {
+                script {
+                    // הרצת קונטיינר Node זמני לביצוע התקנה ובדיקות
+                    sh """
+                    docker run --rm -v ${WORKSPACE}/${FRONTEND_DIR}:/app -w /app node:20-slim \
+                    sh -c 'npm ci && CI=true npm test -- --watch=false'
+                    """
+                }
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    // בניית האימג'ים הסופיים של הפרויקט
                     sh "docker build -t ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA} ${BACKEND_DIR}"
                     sh "docker build -t ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA} ${FRONTEND_DIR}"
-                    
-                    if (env.DOCKERHUB_CREDENTIALS) {
-                        withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                            sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
-                            sh "docker push ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA}"
-                            sh "docker push ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA}"
-                        }
+                }
+            }
+        }
+
+        stage('Push Docker Images') {
+            when { expression { env.DOCKERHUB_CREDENTIALS } }
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                        sh "docker push ${DOCKER_IMAGE_BACKEND}:${COMMIT_SHA}"
+                        sh "docker push ${DOCKER_IMAGE_FRONTEND}:${COMMIT_SHA}"
                     }
                 }
+            }
+        }
+
+        stage('Deploy') {
+            when { expression { env.DEPLOY_ENABLED == 'true' } }
+            steps {
+                sh './scripts/deploy.sh'
             }
         }
     }
