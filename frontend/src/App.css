@@ -1,3 +1,249 @@
+
+/* Always light input in day mode for Playground */
+/* Playground input matches panel style */
+.light-theme .chat-input input {
+  background: linear-gradient(135deg, #f8fafc 60%, #e3ecfa 100%) !important;
+  color: #23272f !important;
+  border: 1.5px solid #e0e7ef !important;
+  border-radius: 1.2rem !important;
+  box-shadow: 0 4px 24px 0 rgba(180, 200, 255, 0.13);
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border 0.2s, box-shadow 0.2s, background 0.3s;
+}
+.light-theme .chat-input input:focus {
+  border: 1.5px solid #4f8cff !important;
+  outline: none !important;
+  box-shadow: 0 4px 24px 0 rgba(80, 180, 255, 0.18);
+  background: #fff !important;
+}
+
+.light-theme .chat-input button {
+  background: linear-gradient(90deg, #4f8cff 0%, #38e8c3 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 1.2rem !important;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
+  box-shadow: 0 2px 12px 0 rgba(80, 180, 255, 0.13);
+  transition: background 0.3s, color 0.3s;
+}
+.light-theme .chat-input button:hover {
+  background: linear-gradient(90deg, #38e8c3 0%, #4f8cff 100%) !important;
+  color: #fff !important;
+}
+
+/* Theme toggle button matches panel/card style */
+
+
+.theme-toggle-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  border: none;
+  border-radius: 0.7rem;
+  min-width: 90px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0 1.2rem;
+  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s, color 0.2s;
+  background: #23272f;
+  color: #fff;
+}
+.theme-toggle-btn:hover {
+  /* background: #181b22; */
+  /* color: #fff; */
+}
+.light-theme .theme-toggle-btn {
+  background: #f7fafd;
+  color: #23272f;
+}
+.light-theme .theme-toggle-btn:hover {
+  /* background: #e3ecfa; */
+  /* color: #2563eb; */
+}
+
+/* Minimalistic theme toggle button */
+
+/* Rectangular, clean theme toggle button with icon and text */
+.theme-toggle-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: #f7fafd;
+  border: 1.5px solid #c7d6ee;
+  border-radius: 0.7rem;
+  min-width: 90px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(180, 200, 255, 0.10);
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s, border 0.3s;
+  font-size: 1.1rem;
+  color: #23272f;
+  font-weight: 500;
+  padding: 0 1.2rem;
+}
+.theme-toggle-btn:hover {
+  /* background: #e3ecfa; */
+  /* border: 1.5px solid #4f8cff; */
+  /* box-shadow: 0 4px 16px rgba(80, 180, 255, 0.13); */
+}
+.light-theme .theme-toggle-btn {
+  background: #fff;
+  color: #23272f;
+  border: 1.5px solid #b6d4fe;
+}
+.light-theme .theme-toggle-btn:hover {
+  background: #e3ecfa;
+  border: 1.5px solid #4f8cff;
+}
+.light-theme input,
+.light-theme textarea,
+.light-theme select {
+  background: #f7fafd !important;
+  color: #23272f !important;
+  border: 1.5px solid #c7d6ee !important;
+  border-radius: 0.7rem !important;
+  box-shadow: 0 1px 4px 0 rgba(180, 200, 255, 0.08);
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.light-theme input:focus,
+.light-theme textarea:focus,
+.light-theme select:focus {
+  border: 1.5px solid #4f8cff !important;
+  outline: none !important;
+  box-shadow: 0 2px 8px 0 rgba(80, 180, 255, 0.13);
+}
+
+.light-theme label {
+  color: #3b4252 !important;
+  font-weight: 500;
+}
+
+.light-theme .panel,
+.light-theme .panel.highlight {
+  border-radius: 1.2rem !important;
+  box-shadow: 0 4px 24px 0 rgba(180, 200, 255, 0.13);
+}
+
+.light-theme .hero-card {
+  border-radius: 1.2rem !important;
+  box-shadow: 0 4px 24px 0 rgba(180, 200, 255, 0.13);
+}
+
+.light-theme .app-shell {
+  border-radius: 0 !important;
+  min-height: 100vh;
+  box-shadow: none;
+}
+
+.light-theme button {
+  /* border-radius: 1.5rem !important; */
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 12px 0 rgba(80, 180, 255, 0.13);
+}
+/* Light theme overrides for day mode */
+
+/* Enhanced Light Theme (Day Mode) */
+.light-theme {
+  background: linear-gradient(135deg, #f8fafc 0%, #e3ecfa 100%) !important;
+  color: #23272f !important;
+  transition: background 0.5s, color 0.5s;
+}
+
+.light-theme .app-shell {
+  background: linear-gradient(135deg, #f8fafc 0%, #e3ecfa 100%) !important;
+  color: #23272f !important;
+  transition: background 0.5s, color 0.5s;
+}
+
+.light-theme main {
+  background: transparent !important;
+}
+
+.light-theme .hero {
+  background: linear-gradient(120deg, #f6fafe 60%, #e9f3ff 100%) !important;
+  border: 1px solid #dbeafe !important;
+  box-shadow: 0 4px 24px 0 rgba(180, 200, 255, 0.12);
+}
+
+.light-theme .hero-card {
+  background: #fff !important;
+  border: 1px solid #e0e7ef !important;
+  box-shadow: 0 2px 12px 0 rgba(180, 200, 255, 0.10);
+}
+
+.light-theme .panel,
+.light-theme .panel.highlight {
+  background: #fff !important;
+  color: #23272f !important;
+  border: 1px solid #e0e7ef !important;
+  box-shadow: 0 2px 12px 0 rgba(180, 200, 255, 0.10);
+  transition: background 0.5s, color 0.5s;
+}
+
+.light-theme .panel-header {
+  color: #3b4252 !important;
+}
+
+.light-theme .eyebrow {
+  color: #5b7fa6 !important;
+  font-weight: 600;
+}
+.light-theme .muted,
+.light-theme .tiny {
+  color: #7b8fa6 !important;
+}
+
+.light-theme .session-id {
+  color: #3b4252 !important;
+}
+
+.light-theme .status-banner.info {
+  background: #e3f0fd !important;
+  border: 1px solid #b6d4fe !important;
+  color: #2563eb !important;
+}
+.light-theme .status-banner.success {
+  background: #e6f9f0 !important;
+  border: 1px solid #b7f7d8 !important;
+  color: #059669 !important;
+}
+.light-theme .status-banner.error {
+  background: #fdeaea !important;
+  border: 1px solid #fbb6b6 !important;
+  color: #dc2626 !important;
+}
+
+.light-theme button {
+  /* background: linear-gradient(90deg, #4f8cff 0%, #38e8c3 100%) !important; */
+  background-color: #05060c !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 2px 8px 0 rgba(80, 180, 255, 0.10);
+  transition: background 0.3s, color 0.3s;
+}
+.light-theme button:hover {
+  /* background: linear-gradient(90deg, #38e8c3 0%, #4f8cff 100%) !important; */
+  color: #fff !important;
+}
 .app-shell {
   min-height: 100vh;
   background: radial-gradient(circle at top, #121626 0%, #05060c 60%, #020204 100%);
@@ -211,13 +457,21 @@ main {
   max-height: 360px;
   overflow-y: auto;
   padding: 1rem;
-  border-radius: 1rem;
+  border-radius: 1.2rem;
   background: rgba(9, 11, 22, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
 }
+
+.light-theme .chat-window {
+  background: linear-gradient(135deg, #f8fafc 60%, #e3ecfa 100%) !important;
+  border: 1.5px solid #e0e7ef !important;
+  box-shadow: 0 4px 24px 0 rgba(180, 200, 255, 0.13);
+  color: #23272f !important;
+}
+
 
 .chat-message {
   padding: 0.8rem 1rem;

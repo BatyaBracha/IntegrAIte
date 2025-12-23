@@ -10,6 +10,11 @@ import { createBlueprint, fetchSnippet, sendPlaygroundMessage } from './services
 import { getOrCreateSessionId } from './utils/session';
 
 function App() {
+  // Theme state: 'dark' (night) or 'light' (day)
+  const [theme, setTheme] = useState('dark');
+
+  // Toggle theme handler
+  const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   const [blueprint, setBlueprint] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
@@ -99,7 +104,15 @@ function App() {
   };
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${theme === 'light' ? ' light-theme' : ''}`}>
+      <button
+        onClick={toggleTheme}
+        className="theme-toggle-btn chat-header"
+        aria-label="Toggle day/night mode"
+        title={theme === 'dark' ? 'Switch to Day Mode' : 'Switch to Night Mode'}
+      >
+        {theme === 'dark' ? 'Day' : 'Night'}
+      </button>
       <main>
         <section className="hero">
           <div>
