@@ -100,9 +100,8 @@ def test_session_state_endpoint() -> None:
 
     store.save_blueprint(blueprint)
     store.assign_session(blueprint.bot_id, "sess-1")
-    store.append_turn(blueprint.bot_id, "sess-1", ChatTurn(content="Hi"))
-    store.append_turn(blueprint.bot_id, "sess-1", ChatTurn(content="Hello"))
-
+    store.append_turn(blueprint.bot_id, "sess-1", ChatTurn(role="user", content="Hi"))
+    store.append_turn(blueprint.bot_id, "sess-1", ChatTurn(role="assistant", content="Hello"))
     response = client.get("/api/v1/session/state", headers={"X-Session-ID": "sess-1"})
 
     assert response.status_code == 200
