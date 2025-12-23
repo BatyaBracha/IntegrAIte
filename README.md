@@ -20,8 +20,9 @@
 - **Lightning-fast onboarding:** Answer 3 questions, generate a unique AI persona for your business.
 - **Live Playground:** Chat with your bot instantly—see how it thinks before you deploy.
 - **One-click Export:** Get production-ready code snippets (Python/JS) for instant integration.
+- **Session persistence:** Close your browser and your last bot + chat come right back, thanks to a JSON-backed store.
 - **Day/Night Mode:** Beautiful, modern UI with seamless light/dark switching.
-- **No database required:** Stateless, secure, and easy to deploy anywhere.
+- **Database optional:** Bots + chat history live in `data/store.json` by default—no external DB needed.
 
 ---
 
@@ -43,6 +44,7 @@ cp frontend/.env.example frontend/.env     # (Optional) Frontend overrides
 - `GEMINI_API_KEY` – required for Gemini API (backend)
 - `GEMINI_MODEL` – defaults to `gemini-2.0-flash`
 - `REACT_APP_API_BASE` – frontend API base (default: `http://localhost:8000/api/v1`)
+- `STORE_PATH` – where bot/session JSON lives (default: `data/store.json`)
 
 ### Local Development
 
@@ -73,6 +75,7 @@ docker compose up --build
 
 - **Backend:** [http://localhost:8000](http://localhost:8000) (API docs: `/docs`)
 - **Frontend:** [http://localhost:3000](http://localhost:3000) (served by Nginx, auto-wired to backend)
+- **Persistent data:** `backend/data` is mounted into the backend container so `data/store.json` survives restarts. Back it up or change `STORE_PATH` to suit your infra.
 
 ---
 

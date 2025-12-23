@@ -42,6 +42,9 @@ class Settings(BaseSettings):
     gemini_model: str = Field(default="gemini-flash-latest", alias="GEMINI_MODEL")
     gemini_models: Optional[List[str]] = Field(default=None, alias="GEMINI_MODELS")
     frontend_origins: str = Field(default="http://localhost:3000", alias="FRONTEND_ORIGINS")
+    store_path: str = Field(default="data/store.json", alias="STORE_PATH")
+    store_max_sessions_per_bot: int = Field(default=10, alias="STORE_MAX_SESSIONS", ge=1)
+    store_max_turns_per_session: int = Field(default=200, alias="STORE_MAX_TURNS", ge=1)
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 

@@ -25,6 +25,8 @@ backend/htmlcov/
 backend/*.egg-info/
 backend/dist/
 backend/build/
+backend/data/
+!backend/data/.gitkeep
 
 # Node/React
 frontend/node_modules/

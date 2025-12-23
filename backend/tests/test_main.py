@@ -2,6 +2,8 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.models.bot import BotBlueprint, BotSnippetResponse
+from app.models.message import ChatMessage
+from app.services.store import store
 
 client = TestClient(app)
 
@@ -47,7 +49,7 @@ def test_create_blueprint_endpoint(monkeypatch) -> None:
         "preferred_language": "he",
     }
 
-    response = client.post("/api/v1/bots/blueprint", json=payload)
+    response = client.post("/api/v1/bots/blueprint", json=payload, headers={"X-Session-ID": "sess-test"})
     assert response.status_code == 200
     assert response.json()["bot_id"] == "bot-123"
 
@@ -80,3 +82,30 @@ def test_snippet_endpoint(monkeypatch) -> None:
     response = client.get("/api/v1/bots/bot-123/snippet?lang=py")
     assert response.status_code == 200
     assert response.json()["code"] == "print('hi')"
+
+
+def test_session_state_endpoint() -> None:
+    store.clear()
+    blueprint = BotBlueprint(
+        bot_id="bot-789",
+        bot_name="Guide",
+        tagline="Helps",
+        tone="calm",
+        language="en",
+        knowledge_base=[],
+        system_prompt="Be nice",
+        sample_questions=[],
+        sample_responses=[],
+    )
+
+    store.save_blueprint(blueprint)
+    store.assign_session(blueprint.bot_id, "sess-1")
+    store.append_turn(blueprint.bot_id, "sess-1", ChatMessage(content="Hi"))
+    store.append_turn(blueprint.bot_id, "sess-1", ChatMessage(content="Hello"))
+
+    response = client.get("/api/v1/session/state", headers={"X-Session-ID": "sess-1"})
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["blueprint"]["bot_id"] == "bot-789"
+    assert [turn["content"] for turn in payload["history"]] == ["Hi", "Hello"]

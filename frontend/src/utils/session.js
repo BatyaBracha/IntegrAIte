@@ -18,3 +18,14 @@ export function getOrCreateSessionId() {
   window.localStorage.setItem(STORAGE_KEY, id);
   return id;
 }
+
+export function setSessionId(id) {
+  if (!id) {
+    throw new Error('Session ID must be provided');
+  }
+
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(STORAGE_KEY, id);
+  }
+  return id;
+}

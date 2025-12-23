@@ -20,7 +20,6 @@ function BotSummary({ blueprint }) {
   return (
     <div className="bot-summary">
       <header>
-        <p className="bot-id">ID: {blueprint.bot_id}</p>
         <h3>{blueprint.bot_name}</h3>
         <p className="tagline">{blueprint.tagline}</p>
       </header>

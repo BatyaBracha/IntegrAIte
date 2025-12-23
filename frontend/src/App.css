@@ -286,10 +286,112 @@ main {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.session-form {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.session-form label {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.session-form__controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.session-form__controls input {
+  flex: 1;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 13, 26, 0.85);
+  color: #f5f6fb;
+  padding: 0.65rem 0.75rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+}
+
+.session-form__controls button {
+  min-width: 90px;
+  border-radius: 0.6rem;
+  border: none;
+  background: linear-gradient(120deg, #675afe, #14d3b5) !important;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.65rem 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(20, 211, 181, 0.25);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.session-form__controls button:hover:not([disabled]) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(20, 211, 181, 0.35);
+}
+
+.session-form__controls button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 560px) {
+  .session-form__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .session-form__controls button {
+    width: 100%;
+  }
+}
+
 .session-id {
   font-family: 'Space Mono', monospace;
   font-size: 0.9rem;
   word-break: break-all;
+}
+
+.session-id-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.session-copy-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: #dfe3f8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, border 0.2s ease, background 0.2s ease;
+}
+
+.session-copy-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(103, 90, 254, 0.7);
+  background: rgba(103, 90, 254, 0.2);
+}
+
+.light-theme .session-copy-btn {
+  border-color: rgba(23, 30, 60, 0.15);
+  background: rgba(23, 30, 60, 0.05);
+  color: #1e2435;
+}
+
+.light-theme .session-copy-btn:hover {
+  background: rgba(20, 211, 181, 0.2);
+  border-color: rgba(20, 211, 181, 0.6);
 }
 
 .tiny {

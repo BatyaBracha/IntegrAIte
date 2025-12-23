@@ -28,9 +28,12 @@ async function request(path, options = {}) {
   return handleResponse(response);
 }
 
-export function createBlueprint(payload) {
+export function createBlueprint(payload, sessionId) {
   return request('/bots/blueprint', {
     method: 'POST',
+    headers: {
+      'X-Session-ID': sessionId,
+    },
     body: JSON.stringify(payload),
   });
 }
@@ -48,5 +51,14 @@ export function sendPlaygroundMessage(botId, sessionId, message) {
 export function fetchSnippet(botId, language) {
   return request(`/bots/${botId}/snippet?lang=${language}`, {
     method: 'GET',
+  });
+}
+
+export function fetchSessionState(sessionId) {
+  return request('/session/state', {
+    method: 'GET',
+    headers: {
+      'X-Session-ID': sessionId,
+    },
   });
 }

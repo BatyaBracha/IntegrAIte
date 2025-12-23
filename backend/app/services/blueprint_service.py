@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import uuid
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from app.core.config import get_settings
 from app.models.bot import BotBlueprint, BotBlueprintRequest
@@ -34,7 +34,7 @@ def _parse_blueprint_payload(payload: Dict[str, Any]) -> BotBlueprint:
     )
 
 
-def create_bot_blueprint(request: BotBlueprintRequest) -> BotBlueprint:
+def create_bot_blueprint(request: BotBlueprintRequest, session_id: Optional[str] = None) -> BotBlueprint:
     """Call Gemini to transform interview answers into a bot blueprint."""
     _ensure_configured()
 
@@ -61,4 +61,6 @@ def create_bot_blueprint(request: BotBlueprintRequest) -> BotBlueprint:
     blueprint = _parse_blueprint_payload(blueprint_dict)
     store.save_blueprint(blueprint)
     store.reset_history_for_bot(blueprint.bot_id)
+    if session_id:
+        store.assign_session(blueprint.bot_id, session_id)
     return blueprint

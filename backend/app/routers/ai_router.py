@@ -8,6 +8,7 @@ from app.models.bot import (
     SnippetLanguage,
 )
 from app.models.message import ChatMessage, ChatResponse
+from app.models.session import SessionState
 from app.services.ai_service import generate_ai_reply_with_context
 from app.services.blueprint_service import create_bot_blueprint
 from app.services.exceptions import (
@@ -17,6 +18,7 @@ from app.services.exceptions import (
 )
 from app.services.playground_service import chat_with_bot
 from app.services.snippet_service import generate_snippet
+from app.services.store import store
 
 router = APIRouter(tags=["chat"])
 
@@ -46,9 +48,12 @@ def chat(
     response_model=BotBlueprint,
     summary="Create a bot blueprint from interview answers",
 )
-def create_blueprint(payload: BotBlueprintRequest) -> BotBlueprint:
+def create_blueprint(
+    payload: BotBlueprintRequest,
+    session_id: str = Header(default=None, alias="X-Session-ID"),
+) -> BotBlueprint:
     try:
-        return create_bot_blueprint(payload)
+        return create_bot_blueprint(payload, session_id)
     except MissingConfigurationError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
     except AIServiceError as exc:
@@ -89,3 +94,16 @@ def export_snippet(
         return generate_snippet(bot_id, lang)
     except BlueprintNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.get(
+    "/session/state",
+    response_model=SessionState,
+    summary="Return persisted blueprint and history for the current session",
+)
+def get_session_state(session_id: str = Header(default=None, alias="X-Session-ID")) -> SessionState:
+    if not session_id:
+        raise HTTPException(status_code=400, detail="X-Session-ID header is required for session restore")
+
+    blueprint, history = store.get_session_state(session_id)
+    return SessionState(blueprint=blueprint, history=history)
