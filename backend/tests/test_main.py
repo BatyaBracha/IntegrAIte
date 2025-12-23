@@ -4,7 +4,7 @@ from app.main import app
 from app.models.bot import BotBlueprint, BotSnippetResponse
 from app.models.message import ChatMessage
 from app.services.store import store
-
+from app.models.session import ChatTurn
 client = TestClient(app)
 
 
@@ -38,7 +38,7 @@ def test_create_blueprint_endpoint(monkeypatch) -> None:
         sample_responses=["היי!"],
     )
 
-    monkeypatch.setattr("app.routers.ai_router.create_bot_blueprint", lambda payload: blueprint)
+    monkeypatch.setattr("app.routers.ai_router.create_bot_blueprint", lambda payload, session_id: blueprint)
 
     payload = {
         "business_name": "My Pizza",
@@ -100,8 +100,8 @@ def test_session_state_endpoint() -> None:
 
     store.save_blueprint(blueprint)
     store.assign_session(blueprint.bot_id, "sess-1")
-    store.append_turn(blueprint.bot_id, "sess-1", ChatMessage(content="Hi"))
-    store.append_turn(blueprint.bot_id, "sess-1", ChatMessage(content="Hello"))
+    store.append_turn(blueprint.bot_id, "sess-1", ChatTurn(content="Hi"))
+    store.append_turn(blueprint.bot_id, "sess-1", ChatTurn(content="Hello"))
 
     response = client.get("/api/v1/session/state", headers={"X-Session-ID": "sess-1"})
 
