@@ -440,7 +440,15 @@ main {
   border: 1px solid rgba(255, 255, 255, 0.06);
   max-height: 200px;
   overflow: auto;
+  color: #f5f6fb;
 }
+
+.light-theme .system-prompt {
+  background: #f7fafd !important;
+  color: #23272f !important;
+  border: 1px solid #e0e7ef !important;
+}
+/* } */
 
 .summary-placeholder {
   color: rgba(255, 255, 255, 0.7);
@@ -521,10 +529,21 @@ main {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  background: rgba(3, 3, 6, 0.9);
+  border-radius: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.5rem 0.5rem 0 0.5rem;
 }
 
+.light-theme .snippet-output {
+  background: #f7fafd !important;
+  color: #23272f !important;
+  border: 1px solid #e0e7ef !important;
+}
+/* } */
+
 .snippet-output pre {
-  background: #05070f;
+  background: transparent;
   border-radius: 0.8rem;
   padding: 1rem;
   overflow: auto;

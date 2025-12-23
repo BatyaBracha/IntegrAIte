@@ -54,6 +54,8 @@ def create_bot_blueprint(request: BotBlueprintRequest) -> BotBlueprint:
         raise AIServiceError(str(exc)) from exc
 
     if not isinstance(blueprint_dict, dict):
+        import sys
+        print(f"[ERROR] Gemini response is not a valid JSON object: {blueprint_dict}", file=sys.stderr)
         raise AIServiceError("Gemini response is not a valid JSON object")
 
     blueprint = _parse_blueprint_payload(blueprint_dict)

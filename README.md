@@ -1,65 +1,105 @@
-# IntegrAIte
 
-From Zero to AI Hero – a full-stack factory that creates bespoke AI agents for any small business in minutes.
+# 🚀 IntegrAIte: From Zero to AI Hero
 
-## Project structure
+> **Spin up a bespoke AI agent for your business in minutes.**
+>
+> IntegrAIte is a full-stack, production-ready platform that lets you design, test, and deploy custom AI agents—no ML expertise required.
 
-```
-backend/   # FastAPI + Gemini orchestration
-frontend/  # React SPA (Interview + Playground + Deploy snippet)
-```
+---
 
-## Prerequisites
+## 🧩 What’s Inside?
 
+- **Backend:** FastAPI + Gemini (Google AI) orchestration
+- **Frontend:** Modern React SPA (Interview, Playground, Snippet Export)
+- **CI/CD Ready:** Docker, Jenkins, and production-grade configs
+
+---
+
+## ✨ Features
+
+- **Lightning-fast onboarding:** Answer 3 questions, generate a unique AI persona for your business.
+- **Live Playground:** Chat with your bot instantly—see how it thinks before you deploy.
+- **One-click Export:** Get production-ready code snippets (Python/JS) for instant integration.
+- **Day/Night Mode:** Beautiful, modern UI with seamless light/dark switching.
+- **No database required:** Stateless, secure, and easy to deploy anywhere.
+
+---
+
+## 🛠️ Quickstart
+
+### Prerequisites
 - Python 3.11+
 - Node.js 20+
-- Docker + Docker Compose (for the containerized workflow)
+- Docker + Docker Compose (for full-stack containerized workflow)
 
-## Environment variables
+### Environment Setup
 
 ```bash
-cp backend/.env.example backend/.env       # add GEMINI_API_KEY inside
-cp frontend/.env.example frontend/.env     # optional override for local dev
+cp backend/.env.example backend/.env       # Add your GEMINI_API_KEY
+cp frontend/.env.example frontend/.env     # (Optional) Frontend overrides
 ```
 
-Key variables:
+**Key variables:**
+- `GEMINI_API_KEY` – required for Gemini API (backend)
+- `GEMINI_MODEL` – defaults to `gemini-2.0-flash`
+- `REACT_APP_API_BASE` – frontend API base (default: `http://localhost:8000/api/v1`)
 
-- `GEMINI_API_KEY` – required for all Gemini calls (backend).
-- `GEMINI_MODEL` – defaults to `gemini-2.0-flash` but can be changed.
-- `REACT_APP_API_BASE` – frontend base URL (defaults to `http://localhost:8000/api/v1`).
+### Local Development
 
-## Running locally (without Docker)
-
+**Backend:**
 ```bash
-# backend
 cd backend
 python -m venv .venv && .venv/Scripts/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
+```
 
-# frontend (another shell)
+**Frontend:**
+```bash
 cd frontend
 npm install
 npm start
 ```
 
-The SPA runs on http://localhost:3000 and proxies API calls to the FastAPI server on http://localhost:8000.
+Open [http://localhost:3000](http://localhost:3000) — the SPA proxies API calls to FastAPI at [http://localhost:8000](http://localhost:8000).
 
-## Docker workflow
+---
+
+## 🐳 Docker Workflow
 
 ```bash
 docker compose up --build
 ```
 
-- Backend: http://localhost:8000 (FastAPI docs under `/docs`).
-- Frontend: http://localhost:3000 (static build served by Nginx, configured` to call `http://backend:8000/api/v1`).
+- **Backend:** [http://localhost:8000](http://localhost:8000) (API docs: `/docs`)
+- **Frontend:** [http://localhost:3000](http://localhost:3000) (served by Nginx, auto-wired to backend)
 
-## Tests
+---
 
-- Backend: `cd backend && python -m pytest`
-- Frontend: `cd frontend && npm test -- --watchAll=false`
+## 🧪 Testing
 
-## Deployment notes
+- **Backend:** `cd backend && python -m pytest`
+- **Frontend:** `cd frontend && npm test -- --watchAll=false`
 
-- The Dockerfiles are production-ready (multi-stage for the frontend, slim Python image for backend).
-- To integrate CI/CD, add steps for installing dependencies, running the tests above, and building both images before pushing.
+---
+
+## 🚀 Deployment & CI/CD
+
+- Production-ready Dockerfiles (multi-stage for frontend, slim Python for backend)
+- Jenkinsfile included for easy CI/CD integration
+- Add your own steps for cloud deploys, secrets, and monitoring
+
+---
+
+## 💡 Why IntegrAIte?
+
+- **Instant value:** Go from idea to working AI agent in minutes
+- **No vendor lock-in:** Export and run anywhere
+- **Modern UX:** Beautiful, accessible, and responsive
+- **Open & hackable:** Tweak, extend, or self-host with ease
+
+---
+
+**Ready to build your next AI agent?**
+
+Clone, configure, and launch your own IntegrAIte instance today!
